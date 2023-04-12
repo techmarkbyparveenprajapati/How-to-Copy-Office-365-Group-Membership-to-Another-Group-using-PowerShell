@@ -1,0 +1,16 @@
+# Connect to Azure AD
+Connect-AzureAD
+
+# Get the source group and its members
+$sourceGroup = Get-AzureADGroup -ObjectId Your_Group_object_id -ErrorAction Stop
+$sourceGroupMembers = Get-AzureADGroupMember -ObjectId $sourceGroup.ObjectId -All $true -ErrorAction Stop
+
+# Get the target group
+$targetGroup = Get-AzureADGroup -ObjectId Your_Group_object_id -ErrorAction Stop
+
+# Add the source group members to the target group
+foreach ($member in $sourceGroupMembers) {
+    if ($member.objectId -ne $targetGroup.ObjectId) {
+        Add-AzureADGroupMember -ObjectId $targetGroup.ObjectId -RefObjectId $member.ObjectId -ErrorAction Stop
+    }
+}
